@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker-slim-build-container:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - 
         name: Checkout
