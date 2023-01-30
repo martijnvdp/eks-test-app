@@ -44,7 +44,7 @@ jobs:
         run: |
           sudo curl https://downloads.dockerslim.com/releases/1.40.0/dist_linux.tar.gz -o ./dist_linux.tar.gz && sudo tar xf ./dist_linux.tar.gz -C . && sudo mv dist_linux/* /usr/bin && sudo chmod +x /usr/bin/docker-slim
           rm ./dist_linux.tar.gz
-          # docker-slim build --tag ghcr.io/martijnvdp/eks-test-app:$VERSION --tag ghcr.io/martijnvdp/eks-test-app:latest --include-cert-all --http-probe=false --continue-after 60 --dockerfile ./Dockerfile --dockerfile-context . --delete-generated-fat-image
+          docker-slim build --tag ghcr.io/martijnvdp/eks-test-app:$VERSION --tag ghcr.io/martijnvdp/eks-test-app:latest --include-cert-all --http-probe=false --continue-after 60 --dockerfile ./Dockerfile --dockerfile-context . --delete-generated-fat-image
           docker push ghcr.io/martijnvdp/eks-test-app --all-tags
 
         shell: bash
