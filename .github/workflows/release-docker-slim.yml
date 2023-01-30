@@ -24,10 +24,16 @@ jobs:
         run: |
           go mod tidy
           go test -v ./pkg/handlers
-      -
-        name: Login to github registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-
+      - 
+        name: Login to GitHub Container registry
+        uses: docker/login-action@v1
+        env:
+          GITHUB_USER: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          registry: ghcr.io
+          username: $GITHUB_USER
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Get Tag Name
         id: tag_name
