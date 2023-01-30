@@ -25,11 +25,9 @@ jobs:
           go mod tidy
           go test -v ./pkg/handlers
       -
-        name: Login to DockerHub
-        uses: docker/login-action@v1 
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        name: Login to github registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
       -
         name: Get Tag Name
         id: tag_name
@@ -41,8 +39,4 @@ jobs:
           go build ./cmd/main.go
           sudo curl https://downloads.dockerslim.com/releases/1.39.1/dist_linux.tar.gz -o ./dist_linux.tar.gz && sudo tar xf ./dist_linux.tar.gz -C . && sudo mv dist_linux/* /usr/bin && sudo chmod +x /usr/bin/docker-slim && sudo chmod +x /usr/bin/docker-slim-sensor
           docker-slim build --tag martijnvdp/eks-test-app:$VERSION --tag martijnvdp/eks-test-app:latest --include-cert-all --http-probe=false --continue-after 60 --dockerfile ./Dockerfile --dockerfile-context . --delete-generated-fat-image
-          docker push docker.io/martijnvdp/eks-test-app --all-tags
-          
-        shell: bash
-        env:
-          VERSION: ${{ steps.tag_name.outputs.SOURCE_TAG }}
+          docker push ghcr.io/martijnvdp/eks-test-app --all-tags
