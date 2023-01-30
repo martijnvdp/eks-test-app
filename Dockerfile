@@ -1,15 +1,11 @@
-FROM golang:1.19.3-alpine AS builder
+FROM golang:1.19.3-alpine
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 WORKDIR /app
 # Avoid invalidating the `go mod download` cache when only code has changed.
-COPY go.mod go.sum /app/
+COPY go.mod go.sum cmd/main.go ./
 RUN go mod download
-COPY . /app/
-RUN go build -o eks-test-app main.go
-
-
-FROM gcr.io/distroless/static AS app
-COPY --from=builder /app/eks-test-app /bin/eks-test-app
+COPY . ./
+RUN go build -o /bin/eks-test-app ./main.go
 
 # Run as UID for nobody
 USER 65534
