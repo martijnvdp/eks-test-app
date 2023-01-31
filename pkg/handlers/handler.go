@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -56,15 +56,10 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		"status_code": "200",
 	}).Inc()
 
-	datetime := time.Now().Format("2006-01-02 15:04:05.000000000") + ": "
-	log.SetPrefix("WARN: " + datetime)
-	log.Println("test warning")
-	log.SetPrefix("DEBUG: " + datetime)
-	log.Println("test debug")
-	log.SetPrefix("ERROR: " + datetime)
-	log.Println("test error")
-	log.SetPrefix("INFO: " + datetime)
-	log.Printf("Serving request %s %s\n", r.Method, r.URL.Path)
+	log.Warn().Msg("test warning")
+	log.Debug().Msg("test debug")
+	log.Error().Msg("test error")
+	log.Info().Msgf("Serving request %s %s\n", r.Method, r.URL.Path)
 	fmt.Fprintln(w, getenv("WWW_BODY", "Hello, World!"))
 }
 
@@ -74,6 +69,6 @@ func StartAPI() {
 	fmt.Println("Starting server on port 8080")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 }
