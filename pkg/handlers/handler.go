@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -28,6 +29,14 @@ var (
 	)
 )
 
+func getenv(key, defaultString string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultString
+	}
+	return value
+}
+
 func init() {
 	prometheus.MustRegister(requestCounter)
 	prometheus.MustRegister(requestDuration)
@@ -46,8 +55,17 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		"route":       r.URL.Path,
 		"status_code": "200",
 	}).Inc()
+
+	datetime := time.Now().Format("2006-01-02 15:04:05.000000000") + ": "
+	log.SetPrefix("WARN: " + datetime)
+	log.Println("test warning")
+	log.SetPrefix("DEBUG: " + datetime)
+	log.Println("test debug")
+	log.SetPrefix("ERROR: " + datetime)
+	log.Println("test error")
+	log.SetPrefix("INFO: " + datetime)
 	log.Printf("Serving request %s %s\n", r.Method, r.URL.Path)
-	fmt.Fprintln(w, "Hello, World!")
+	fmt.Fprintln(w, getenv("WWW_BODY", "Hello, World!"))
 }
 
 func StartAPI() {
