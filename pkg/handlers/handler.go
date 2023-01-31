@@ -46,6 +46,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		"route":       r.URL.Path,
 		"status_code": "200",
 	}).Inc()
+	log.Println("This is a debug message.", "Debug")
+	log.Println("This is an error message.", "Error")
 	log.Printf("Serving request %s %s\n", r.Method, r.URL.Path)
 	fmt.Fprintln(w, "Hello, World!")
 }
