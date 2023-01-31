@@ -13,14 +13,14 @@ import (
 var (
 	requestCounter = prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: "request_count",
+			Name: "eks_test_app_request_count",
 			Help: "Total number of connections processed by the server",
 		},
 		[]string{"method", "route", "status_code"},
 	)
 	requestDuration = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name:    "request_duration_seconds",
+			Name:    "eks_test_app_request_duration_seconds",
 			Help:    "Time taken for each request to complete",
 			Buckets: []float64{0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10},
 		},
