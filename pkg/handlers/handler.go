@@ -64,11 +64,17 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func StartAPI() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal().Msg("Required value PORT not found in environment, exiting")
+	}
+
 	http.HandleFunc("/", handleRequest)
 	http.Handle("/metrics", promhttp.Handler())
-	fmt.Println("Starting server on port 8080")
+	log.Info().Msgf("Starting server on port %s", port)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
+	log.Info().Msgf("Server is ready to handle requests at %s", port)
 }
