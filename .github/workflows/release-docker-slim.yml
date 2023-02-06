@@ -7,6 +7,10 @@ on:
 
 jobs:
   docker-slim-build-container:
+    name: Build and push container image
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - 
