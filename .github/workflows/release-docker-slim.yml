@@ -28,24 +28,16 @@ jobs:
         run: |
           go mod tidy
           go test -v ./pkg/handlers
-      # - 
-      #   name: Login to GitHub Container registry
-      #   uses: docker/login-action@v1
-      #   env:
-      #     GITHUB_USER: ${{ github.actor }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     registry: ghcr.io
-      #     username: $GITHUB_USER
-      #     password: ${{ secrets.GH_TOKEN }}
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - 
+        name: Login to GitHub Container registry
+        uses: docker/login-action@v1
+        env:
+          GITHUB_USER: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+          registry: ghcr.io
+          username: $GITHUB_USER
+          password: ${{ secrets.GH_TOKEN }}
       -
         name: Get Tag Name
         id: tag_name
@@ -56,8 +48,8 @@ jobs:
         run: |
           sudo curl https://downloads.dockerslim.com/releases/1.40.0/dist_linux.tar.gz -o ./dist_linux.tar.gz && sudo tar xf ./dist_linux.tar.gz -C . && sudo mv dist_linux/* /usr/bin && sudo chmod +x /usr/bin/docker-slim
           rm ./dist_linux.tar.gz
-          docker-slim build --tag ${{ secrets.AWS_ECR_TARGET }}:$VERSION --tag ${{ secrets.AWS_ECR_TARGET }}:latest --include-cert-all --http-probe=false --continue-after 60 --dockerfile ./Dockerfile --dockerfile-context . --delete-generated-fat-image
-          docker push ${{ secrets.AWS_ECR_TARGET }} --all-tags
+          docker-slim build --tag ghcr.io/martijnvdp/eks-test-app:$VERSION --tag ghcr.io/martijnvdp/eks-test-app:latest --include-cert-all --http-probe=false --continue-after 60 --dockerfile ./Dockerfile --dockerfile-context . --delete-generated-fat-image
+          docker push ghcr.io/martijnvdp/eks-test-app --all-tags
 
         shell: bash
         env:
